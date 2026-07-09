@@ -1,72 +1,94 @@
 # Semantic-HTML-va-Tuzilma
-Veb-saytingiz hamma uchun (shu jumladan ekran o'quvchi dasturlardan foydalanuvchi ko'zi ojizlar uchun ham) tushunarli bo'lishini ta'minlashda WAI-ARIA atributlarining o'rni juda katta. Keltirilgan 5 ta qoidaning amaliy qo'llanilishi va tushuntirishini ko'rib chiqamiz:
+Veb-saytlardan klaviatura orqali foydalanish (Keyboard Accessibility) imkoniyati cheklangan va ekran o'quvchi dasturlardan foydalanuvchilar uchun hayotiy ahamiyatga ega. Keltirilgan 5 ta asosiy qoida va ularning amalga oshirilishi:
 
-1. Accordion (Akkordeon)
-Akkordeon bosilganda ochilib-yopiladigan blok hisoblanadi. Uni to'g'ri yaratish uchun quyidagi atributlar kerak:
+1. Tab va Escape tugmalari boshqaruvi
+Tab: Foydalanuvchi klaviaturadagi Tab tugmasini bosganda, fokus faqat bosish mumkin bo'lgan elementlarga (havolalar, tugmalar, formalar) tartib bilan o'tishi kerak.
 
-aria-expanded="true/false": Tugmaga beriladi. Ichidagi kontent hozir ochiq (true) yoki yopiq (false) ekanini bildiradi. JavaScript yordamida dinamik o'zgartiriladi.
+Escape: Har xil ochiluvchi elementlar (modal oynalar, akkordeonlar, dropdown menyular) Escape (Esc) tugmasi bosilganda darhol yopilishi shart.
 
-aria-controls="ID": Tugmaga beriladi va u boshqarayotgan kontent blokining idsini ko'rsatadi.
+2. Strelka tugmalari (Arrow Keys) bilan harakatlanish
+Murakkab interfeyslar (masalan, tab-panellar, saytning bosh menyusi yoki dropdown ro'yxatlar) ichida harakatlanish uchun faqat Tabdan foydalanish noqulay.
 
-aria-hidden="true/false": Kontent blokiga beriladi. Blok yopiq bo'lganda true qilinadi, shunda ekran o'quvchi uni o'qimaydi.
+Foydalanuvchi komponent ichiga Tab bilan kirgandan so'ng, uning ichidagi elementlar aro Chap/O'ng yoki Tepaga/Pastga strelka tugmalari orqali harakatlanishi to'g'ri hisoblanadi.
 
-2. Modal (Modal oyna)
-Modal oyna ochilganda foydalanuvchi e'tiborini butunlay o'ziga qaratadigan elementdir:
+3. :focus-visible uslubi (Focus Indicator)
+Klaviaturada harakatlanayotgan foydalanuvchi hozir sahifaning qaysi joyida turganini vizual tarzda ko'rib turishi shart.
 
-role="dialog": Brauzerga bu shunchaki blok emas, balki muloqot oynasi (dialog) ekanini bildiradi.
+:focus-visible CSS psevdo-klassi faqat klaviatura orqali fokuslanganda (sichqoncha bilan bosilganda emas) element atrofiga yorqin chiziq (outline) chizish imkonini beradi.
 
-aria-modal="true": Ekran o'quvchiga foydalanuvchi diqqatini faqat shu oyna ichida ushlab turishni, uning ortidagi elementlarga o'tib ketmaslikni buyuradi.
+CSS
+/* Sichqoncha bilan bosganda chiqmaydi, klaviaturada Tab bosilganda aniq ko'rinadi */
+button:focus-visible, a:focus-visible {
+  outline: 4px solid #3b82f6;
+  outline-offset: 2px;
+}
+4. Skip Link (O'tkazib yuborish havolasi)
+Sahifaning eng tepasida (odatda <body> ning ichida birinchi element bo'lib) yashirin havola joylashtiriladi.
 
-aria-labelledby="ID": Modal oynaning sarlavhasi (<h2>) idsiga bog'lanadi.
-
-aria-describedby="ID": Modal oyna ichidagi qo'shimcha tushuntirish matni idsiga bog'lanadi.
-
-3. Tugmalar (Buttons)
-Tugma ichida nima vazifa bajarishi yozilgan matn bo'lishi shart.
-
-Agar tugma ichida faqat rasm yoki belgi (masalan, +, ☰) bo'lsa, u holda aria-label orqali unga matnli tushuntirish berish majburiydir.
-
-Agar tugma ichida "Sotib olish" kabi ko'rinadigan matn bo'lsa, aria-label shart emas.
-
-4. Yopish tugmasi (Close Button)
-Modal yoki bildirishnomalarni yopish uchun odatda ikonka (X belgisi) qo'yiladi. Ekran o'quvchi uni "Iks tugmasi" deb o'qimasligi uchun unga mantiqiy nom beriladi:
-
-aria-label="Yopish" yoki inglizcha saytlarda aria-label="Close".
-
-5. Dinamik o'zgarishlar (aria-live="polite")
-Sahifa qayta yuklanmasdan turib biror matn o'zgarsa (masalan, savatga mahsulot qo'shilganda "Savatda 1 ta mahsulot bor" degan yozuv chiqsa), ko'zi ojiz foydalanuvchi buni sezmay qolishi mumkin.
-
-aria-live="polite": Ekran o'quvchiga ushbu blokda o'zgarish bo'lganda, foydalanuvchining hozirgi o'qiyotgan matni tugashi bilan yangi o'zgargan matnni ham ovozli o'qib berishni buyuradi.
-
-Amaliy HTML Kod Namunasi:
-Quyidagi kodda yuqoridagi barcha qoidalar jamlangan:
+Klaviaturadan foydalanuvchi har safar yangi sahifaga o'tganda o'sha bir xil menyularni qayta-qayta Tab bosib o'tmasligi uchun, ushbu havola uni to'g'ridan-to'g'ri asosiy kontentga (<main> blokiga) olib o'tadi. U odatda yashirin turadi va Tab bosilgandagina ko'rinadi.
 
 HTML
-<div class="accordion-item">
-  <button id="acc-button" aria-expanded="false" aria-controls="acc-content">
-    Ko'p beriladigan savollar
-  </button>
-  
-  <div id="acc-content" aria-hidden="true">
-    <p>Bu akkordeon ichidagi yashirin matn hisoblanadi.</p>
-  </div>
+<a href="#main-content" class="skip-link">Asosiy kontentga o'tish</a>
+5. Fokus qopqoni (Focus Trap)
+Modal oyna ochilganda eng muhim xavfsizlik qoidalaridan biri — fokusni modal oynaning ichida "asirga olish" (trap qilish) hisoblanadi.
+
+Modal ochilganda, foydalanuvchi Tabni bosaversa ham fokus modal oynadan tashqariga (orqa fondagi elementlarga) chiqib ketmasligi kerak. Fokus oxirgi tugmaga yetsa va yana Tab bosilsa, u qaytadan modalning birinchi elementiga (masalan, yopish tugmasiga) qaytishi shart. Modal yopilgach esa, fokus modalni ochgan ilk tugmaga qaytariladi.
+
+Amaliy JavaScript va HTML Namunasi (Focus Trap va Escape uchun):
+HTML
+<a href="#main" class="skip-link">Kontentga o'tish</a>
+
+<button id="openModal">Modalni ochish</button>
+
+<div id="myModal" role="dialog" aria-modal="true" style="display:none;">
+  <button id="closeModal">Yopish</button>
+  <input type="text" placeholder="Ismingiz">
+  <button type="submit">Yuborish</button>
 </div>
 
-<hr>
+<script>
+const openBtn = document.getElementById('openModal');
+const modal = document.getElementById('myModal');
+const closeBtn = document.getElementById('closeModal');
 
-<div role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc">
-  
-  <h2 id="modal-title">Tizimga kirish</h2>
-  <p id="modal-desc">Iltimos, profilingizga kirish uchun login va parolingizni kiriting.</p>
-  
-  <button type="button" aria-label="Yopish">&times;</button>
-</div>
+// 1. Escape orqali yopish
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modal.style.display === 'block') {
+    closeModalWindow();
+  }
+});
 
-<hr>
+// 5. Fokus qopqoni (Focus Trap) logikasi
+modal.addEventListener('keydown', (e) => {
+  const focusableElements = modal.querySelectorAll('button, input');
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements[focusableElements.length - 1];
 
-<button type="button" aria-label="Qidirish">
-  <svg>...</svg> </button>
+  if (e.key === 'Tab') {
+    if (e.shiftKey) { // Shift + Tab orqaga harakatlanganda
+      if (document.activeElement === firstElement) {
+        lastElement.focus();
+        e.preventDefault();
+      }
+    } else { // Shunchaki Tab oldinga harakatlanganda
+      if (document.activeElement === lastElement) {
+        firstElement.focus();
+        e.preventDefault();
+      }
+    }
+  }
+});
 
-<div aria-live="polite" id="cart-status">
-  Savatda hozircha mahsulot yo'q.
-</div>
+function openModalWindow() {
+  modal.style.display = 'block';
+  closeBtn.focus(); // Modal ochilishi bilan birinchi elementga fokus beriladi
+}
+
+function closeModalWindow() {
+  modal.style.display = 'none';
+  openBtn.focus(); // 5. Yopilgach fokus ochgan tugmaga qaytadi
+}
+
+openBtn.addEventListener('click', openModalWindow);
+closeBtn.addEventListener('click', closeModalWindow);
+</script>
