@@ -1,85 +1,72 @@
 # Semantic-HTML-va-Tuzilma
-Keltirilgan 5 ta qoidaga asosan to'g'ri tarkibiy tuzilmani ko'rib chiqamiz:
+Veb-saytingiz hamma uchun (shu jumladan ekran o'quvchi dasturlardan foydalanuvchi ko'zi ojizlar uchun ham) tushunarli bo'lishini ta'minlashda WAI-ARIA atributlarining o'rni juda katta. Keltirilgan 5 ta qoidaning amaliy qo'llanilishi va tushuntirishini ko'rib chiqamiz:
 
-1. <header>, <nav>, <main>, <footer> elementlari
-Bu teglar sahifaning asosiy maketini (layout) belgilaydi:
+1. Accordion (Akkordeon)
+Akkordeon bosilganda ochilib-yopiladigan blok hisoblanadi. Uni to'g'ri yaratish uchun quyidagi atributlar kerak:
 
-<header>: Saytning yuqori qismi (bosh qismi). Odatda logo, sayt nomi va navigatsiyani ichiga oladi.
+aria-expanded="true/false": Tugmaga beriladi. Ichidagi kontent hozir ochiq (true) yoki yopiq (false) ekanini bildiradi. JavaScript yordamida dinamik o'zgartiriladi.
 
-<nav>: Navigatsiya havolalari (menyu) bloki.
+aria-controls="ID": Tugmaga beriladi va u boshqarayotgan kontent blokining idsini ko'rsatadi.
 
-<main>: Sahifaning yagona, asosiy va takrorlanmas mazmuni.
+aria-hidden="true/false": Kontent blokiga beriladi. Blok yopiq bo'lganda true qilinadi, shunda ekran o'quvchi uni o'qimaydi.
 
-<footer>: Sahifaning pastki qismi (zirh). Mualliflik huquqlari, aloqa ma'lumotlari va qo'shimcha havolalar joylashadi.
+2. Modal (Modal oyna)
+Modal oyna ochilganda foydalanuvchi e'tiborini butunlay o'ziga qaratadigan elementdir:
 
-2. Sarlavhalar ierarxiyasi (<h1> → <h2> → <h3>)
-Sarlavha teglari o'lcham uchun emas, matn muhimligini ko'rsatish uchun ishlatiladi:
+role="dialog": Brauzerga bu shunchaki blok emas, balki muloqot oynasi (dialog) ekanini bildiradi.
 
-<h1> sahifada faqat bitta bo'lishi va eng asosiy mavzuni ifodalashi kerak.
+aria-modal="true": Ekran o'quvchiga foydalanuvchi diqqatini faqat shu oyna ichida ushlab turishni, uning ortidagi elementlarga o'tib ketmaslikni buyuradi.
 
-Sarlavha pog'onalarini tashlab ketish mumkin emas (masalan, <h1> dan keyin to'g'ridan-to'g'ri <h3> ga o'tib ketish xato).
+aria-labelledby="ID": Modal oynaning sarlavhasi (<h2>) idsiga bog'lanadi.
 
-3. <article> va <section> farqi
-<article>: Mustaqil, alohida ko'chirib olinsa ham o'z ma'nosini yo'qotmaydigan kontent (masalan: blog posti, yangilik, forum mavzusi).
+aria-describedby="ID": Modal oyna ichidagi qo'shimcha tushuntirish matni idsiga bog'lanadi.
 
-<section>: Sahifaning yoki biror maqolaning mantiqiy bo'limi. Odatda ichida o'zining sarlavhasi (<h2>-<h6>) bo'ladi.
+3. Tugmalar (Buttons)
+Tugma ichida nima vazifa bajarishi yozilgan matn bo'lishi shart.
 
-4. <figure> va <figcaption>
-Rasmlar, grafiklar yoki kod namunalarini tushuntirish matni bilan birga guruhlash uchun ishlatiladi:
+Agar tugma ichida faqat rasm yoki belgi (masalan, +, ☰) bo'lsa, u holda aria-label orqali unga matnli tushuntirish berish majburiydir.
 
-<figure> rasm va uning matnini o'rab turadi.
+Agar tugma ichida "Sotib olish" kabi ko'rinadigan matn bo'lsa, aria-label shart emas.
 
-<figcaption> rasmning ostidagi izoh matni hisoblanadi.
+4. Yopish tugmasi (Close Button)
+Modal yoki bildirishnomalarni yopish uchun odatda ikonka (X belgisi) qo'yiladi. Ekran o'quvchi uni "Iks tugmasi" deb o'qimasligi uchun unga mantiqiy nom beriladi:
 
-5. <nav> ichida <ul>/<li> ishlatish
-Menyular ro'yxat shaklida bo'lgani sababli, ularni tartibsiz ro'yxat teglari orqali yozish semantik jihatdan eng to'g'ri yo'ldir.
+aria-label="Yopish" yoki inglizcha saytlarda aria-label="Close".
 
-To'g'ri tuzilgan HTML kod namunasi:
+5. Dinamik o'zgarishlar (aria-live="polite")
+Sahifa qayta yuklanmasdan turib biror matn o'zgarsa (masalan, savatga mahsulot qo'shilganda "Savatda 1 ta mahsulot bor" degan yozuv chiqsa), ko'zi ojiz foydalanuvchi buni sezmay qolishi mumkin.
+
+aria-live="polite": Ekran o'quvchiga ushbu blokda o'zgarish bo'lganda, foydalanuvchining hozirgi o'qiyotgan matni tugashi bilan yangi o'zgargan matnni ham ovozli o'qib berishni buyuradi.
+
+Amaliy HTML Kod Namunasi:
+Quyidagi kodda yuqoridagi barcha qoidalar jamlangan:
+
 HTML
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-    <meta charset="UTF-8">
-    <title>Semantik HTML Sahifa</title>
-</head>
-<body>
+<div class="accordion-item">
+  <button id="acc-button" aria-expanded="false" aria-controls="acc-content">
+    Ko'p beriladigan savollar
+  </button>
+  
+  <div id="acc-content" aria-hidden="true">
+    <p>Bu akkordeon ichidagi yashirin matn hisoblanadi.</p>
+  </div>
+</div>
 
-    <header>
-        <h1>Mening Shaxsiy Blogim</h1>
-        <nav>
-            <ul>
-                <li><a href="#home">Bosh sahifa</a></li>
-                <li><a href="#articles">Maqolalar</a></li>
-                <li><a href="#about">Biz haqimizda</a></li>
-            </ul>
-        </nav>
-    </header>
+<hr>
 
-    <main>
-        
-        <section id="articles">
-            <h2>So'nggi Maqolalar</h2>
+<div role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc">
+  
+  <h2 id="modal-title">Tizimga kirish</h2>
+  <p id="modal-desc">Iltimos, profilingizga kirish uchun login va parolingizni kiriting.</p>
+  
+  <button type="button" aria-label="Yopish">&times;</button>
+</div>
 
-            <article>
-                <h3>HTML5 Semantikasi haqida</h3> <p>Semantik teglar brauzer va dasturlarga sahifa mazmunini yaxshiroq tushunishga yordam beradi.</p>
-                
-                <figure>
-                    <img src="html5-structure.png" alt="HTML5 tuzilishi sxemasi">
-                    <figcaption>HTML5 sahifasining asosiy semantik bloklari sxemasi.</figcaption>
-                </figure>
-            </article>
+<hr>
 
-            <article>
-                <h3>CSS Grid nima?</h3>
-                <p>CSS Grid orqali murakkab veb-maketlarni osonlik bilan yaratish mumkin.</p>
-            </article>
-        </section>
+<button type="button" aria-label="Qidirish">
+  <svg>...</svg> </button>
 
-    </main>
-
-    <footer>
-        <p>&copy; 2026 Barcha huquqlar himoyalangan.</p>
-    </footer>
-
-</body>
-</html>
+<div aria-live="polite" id="cart-status">
+  Savatda hozircha mahsulot yo'q.
+</div>
